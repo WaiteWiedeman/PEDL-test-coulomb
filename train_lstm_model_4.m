@@ -63,13 +63,12 @@ function [dsTrain,layers,options] = train_lstm_model_4(sampleFile, trainParams)
     layers = [
         layers
         fullyConnectedLayer(numStates, "Name", "output")
-        regressionLayer
-       ];
+        regressionLayer];
     
-    lgraph = layerGraph(layers);
-    lgraph = addLayers(lgraph,[...
+    layers = layerGraph(layers);
+    layers = addLayers(layers,[...
         featureInputLayer(1, Name = "time")]);
-    lgraph = connectLayers(lgraph, "time", "cat/in2");
+    layers = connectLayers(layers, "time", "cat/in2");
     % plot(lgraph);
 
     % combine a datastore for training

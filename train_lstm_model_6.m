@@ -63,8 +63,7 @@ function [dsTrain,layers,options] = train_lstm_model_6(sampleFile, trainParams)
     layers = [
         layers
         fullyConnectedLayer(numStates, "Name", "output")
-        weightedLossLayer("mse")
-       ];
+        weightedLossLayer("mse")];
     
     layers = layerGraph(layers);
     layers = addLayers(layers,[...

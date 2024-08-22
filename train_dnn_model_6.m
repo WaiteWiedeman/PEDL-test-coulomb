@@ -25,7 +25,7 @@ function [xTrain,yTrain,layers,options] = train_dnn_model_6(sampleFile, trainPar
             end
         end
     end
-    disp(num2str(length(xTrain)) + " samples are generated for training.");
+    %disp(num2str(length(xTrain)) + " samples are generated for training.");
     xTrain = xTrain';
     yTrain = yTrain';
 
@@ -60,8 +60,7 @@ function [xTrain,yTrain,layers,options] = train_dnn_model_6(sampleFile, trainPar
     layers = [
         layers
         fullyConnectedLayer(numStates, "Name", "output")
-        weightedLossLayer("mse")
-       ];
+        weightedLossLayer("mse")];
 
     layers = layerGraph(layers);
     % plot(lgraph);

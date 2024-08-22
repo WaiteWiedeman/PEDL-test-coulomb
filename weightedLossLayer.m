@@ -27,7 +27,7 @@ classdef weightedLossLayer < nnet.layer.RegressionLayer ...
             physicLoss = mse(f, fTarget);
 
             % final loss, combining data loss and physics loss
-            global trainParams;
+            trainParams = params_training();
             loss = (1.0-trainParams.alpha)*dataLoss + trainParams.alpha*physicLoss;
         end
 
