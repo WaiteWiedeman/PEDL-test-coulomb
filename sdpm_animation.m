@@ -13,7 +13,7 @@ v=VideoWriter('sdpm_animation.avi');
 v.FrameRate=60;
 open(v);
 f = figure;
-f.Position = [400 400 1000 250];
+f.Position = [400 400 1000 600];
 
 for n = 1:length(t)
     cla
@@ -23,6 +23,19 @@ for n = 1:length(t)
     theta_pred = thp(n);
     
     % Plot everything for the video
+    subplot(3,1,1)
+    plot(t(1:n),x(1:n),'g',t(1:n),xp(1:n),'r--','LineWidth',2)
+    ylabel("$q_1$","Interpreter","latex");
+    grid on
+    axis([0 max(t) min(xp)-1 max(xp)+1])
+
+    subplot(3,1,2)
+    plot(t(1:n),th(1:n),'b',t(1:n),thp(1:n),'r--','LineWidth',2)
+    ylabel("$q_2$","Interpreter","latex");
+    grid on
+    axis([0 max(t) min(thp)-1 max(thp)+1])
+
+    subplot(3,1,3)
     hold on
     % Plot one frame...
     % True system
@@ -45,8 +58,7 @@ for n = 1:length(t)
 
     axis([Xmin Xmax Ymin Ymax])
     daspect([1 1 1])
-    titletext = {"Spring Damper Pendulum Mass system", "Mass Displacement: " + num2str(Xcg) + "      Predicted: " + num2str(Xcg_pred),...
-        "Pendulum Angle: " + num2str(theta*180/pi) + "      Predicted: " + num2str(theta_pred*180/pi)};
+    titletext = {"Spring Damper Pendulum Mass system"};
     title(titletext)
     frame=getframe(gcf);
     writeVideo(v,frame);

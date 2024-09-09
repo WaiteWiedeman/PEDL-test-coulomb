@@ -20,7 +20,7 @@ trainParams = params_training();
 trainParams.type = "dnn4"; % "dnn4","lstm4","pinn4","dnn6", "lstm6","pinn6"
 numTime = 100;
 f1Max = 15;
-tSpan = 0:0.01:5; % [0,5] 0:0.01:5
+tSpan = 0:0.01:10; % [0,5] 0:0.01:5
 predInterval = 10; 
 
 %% simulation 
@@ -29,8 +29,8 @@ y = sdpm_simulation(tSpan, sysParams, ctrlParams);
 t = y(:,1);
 x = y(:,2:7);
 [xp, rmseErr, refTime] = evaluate_single(net, t, x, ctrlParams, trainParams, tSpan, predInterval, numTime, trainParams.type);
-%plot_compared_states(t,x,t,xp)
-% sdpm_snapshot(sysParams, t, x(:,1), x(:,2), xp(:,1), xp(:,2), 3)
+plot_compared_states(t,x,t,xp)
+sdpm_snapshot(sysParams, t, x(:,1), x(:,2), xp(:,1), xp(:,2), 3)
 sdpm_animation(sysParams, t, x(:,1), x(:,2), xp(:,1), xp(:,2))
 disp(mean(rmseErr,'all'))
 

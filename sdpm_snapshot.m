@@ -15,7 +15,23 @@ Ymax = 2;
 l = sysParams.L; % pendulum rod length
 
 f = figure;
-f.Position = [400 400 1000 250];
+f.Position = [400 400 1000 600];
+
+subplot(3,1,1)
+plot(t,x,'g',t,xp,'r--','LineWidth',2)
+ylabel("$q_1$","Interpreter","latex");
+xline(t_snap,'k--','Time in image', 'LineWidth',1);
+grid on
+axis([0 max(t) min(xp)-1 max(xp)+1])
+
+subplot(3,1,2)
+plot(t,th,'b',t,thp,'r--','LineWidth',2)
+ylabel("$q_2$","Interpreter","latex");
+xline(t_snap,'k--','Time in image', 'LineWidth',1);
+grid on
+axis([0 max(t) min(thp)-1 max(thp)+1])
+
+subplot(3,1,3)
 hold on
 % Plot one frame...
 % True system
@@ -36,8 +52,7 @@ plot(Xcg_pred+l*sin(theta_pred),Ycg-l*cos(theta_pred),'Marker','o','MarkerSize',
 
 axis([Xmin Xmax Ymin Ymax])
 daspect([1 1 1])
-titletext = {"Spring Damper Pendulum Mass system", "Mass Displacement: " + num2str(Xcg) + "      Predicted: " + num2str(Xcg_pred),...
-        "Pendulum Angle: " + num2str(theta*180/pi) + "      Predicted: " + num2str(theta_pred*180/pi)};
+titletext = {"Spring Damper Pendulum Mass system at "+num2str(t_snap)+" s"};
 title(titletext)
 
 saveas(f,'sdpm_snapshot.jpg')
