@@ -6,7 +6,7 @@ sysParams = params_system();
 ctrlParams = params_control();
 trainParams = params_training();
 trainParams.numSamples = 400;
-trainParams.type = "dnn4"; % "dnn4","lstm4","pinn4","dnn6", "lstm6","pinn6"
+trainParams.type = "pinn4"; % "dnn4","lstm4","pinn4","dnn6", "lstm6","pinn6"
 trainParams.numLayers = 4;
 trainParams.numNeurons = 256;
 modelFile = "model\"+trainParams.type+"_"+num2str(trainParams.numLayers)+"_"+num2str(trainParams.numNeurons)+".mat";
@@ -28,23 +28,33 @@ end
 switch trainParams.type
     case "dnn4"
         [xTrain,yTrain,layers,options] = train_dnn_model_4(dataFile, trainParams);
+        [net,info] = trainNetwork(xTrain,yTrain,layers,options);
+        plot(layers)
     case "lstm4"
         [xTrain,yTrain,layers,options] = train_lstm_model_4(dataFile, trainParams);
+        [net,info] = trainNetwork(xTrain,yTrain,layers,options);
+        plot(layers)
     case "pinn4"
-        [xTrain,yTrain,layers,options] = train_pinn_model_4(dataFile, trainParams);
+        monitor = trainingProgressMonitor;
+        output = train_pinn_model_4(dataFile, trainParams,sysParams,ctrlParams,monitor);
+        net = output.trainedNet;
     case "dnn6"
+        [net,info] = trainNetwork(xTrain,yTrain,layers,options);
         [xTrain,yTrain,layers,options] = train_dnn_model_6(dataFile, trainParams);
+        plot(layers)
     case "lstm6"
+        [net,info] = trainNetwork(xTrain,yTrain,layers,options);
         [xTrain,yTrain,layers,options] = train_lstm_model_6(dataFile, trainParams);
+        plot(layers)
     case "pinn6"
-        [xTrain,yTrain,layers,options] = train_pinn_model_6(dataFile, trainParams);
+        monitor = trainingProgressMonitor;
+        output = train_pinn_model_4(dataFile, trainParams,sysParams,ctrlParams,monitor);
+        net = output.trainedNet;
     otherwise
         disp("unspecified type of model.")
 end
 
-plot(layers)
 % training with numeric array data
-[net,info] = trainNetwork(xTrain,yTrain,layers,options);
 trainLoss = info.TrainingLoss;
 save(modelFile, 'net');
 % disp(info)
