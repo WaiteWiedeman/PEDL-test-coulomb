@@ -1,7 +1,9 @@
-%% 
+%% clear workspace
 close all;
 clear; 
 clc;
+
+%% parameters
 sysParams = params_system();
 ctrlParams = params_control();
 trainParams = params_training();
@@ -10,6 +12,14 @@ trainParams.type = "pinn4"; % "dnn4","lstm4","pinn4","dnn6", "lstm6","pinn6"
 trainParams.numLayers = 4;
 trainParams.numNeurons = 256;
 modelFile = "model\"+trainParams.type+"_"+num2str(trainParams.numLayers)+"_"+num2str(trainParams.numNeurons)+".mat";
+
+%% Run simulation
+f1 = 20; % initial force input
+tSpan = [0,5]; % [0,5] 0:0.01:5
+ctrlParams.fMax = [f1; 0];
+y = sdpm_simulation(tSpan, sysParams, ctrlParams);
+plot_states(y(:,1),y(:,2:7));
+plot_forces(y(:,1),y(:,8),y(:,10));
 
 %% generate samples
 if ~exist("\data\", 'dir')
@@ -83,3 +93,33 @@ numTime = 100;
 %avgErr = evaluate_model(net, sysParams, ctrlParams, trainParams, f1Max, tSpan, predInterval, numCase, numTime, trainParams.type);
 avgErr = evaluate_model_with_4_states(net, sysParams, ctrlParams, trainParams, f1Max, tSpan, predInterval, numCase, numTime, trainParams.type);
 disp(avgErr)
+
+%% functions
+function plot_forces(t,f1,fc)
+    figure('Position',[500,100,800,800]);
+    plot(t,f1,'k-',t,fc,'b-','LineWidth',2);
+    legend("F1","Fc");
+end
+
+function plot_states(t,x)
+    refClr = "blue";
+    predClr = "red";
+    labels= ["$q_1$","$q_2$","$\dot{q}_1$","$\dot{q}_2$","$\ddot{q}_1$","$\ddot{q}_2$"];
+    figure('Position',[500,100,800,800]);
+    tiledlayout("vertical","TileSpacing","tight")
+    numState = size(x);
+    numState = numState(2);
+    for i = 1:numState
+        nexttile
+        plot(t,x(:,i),'Color',refClr,'LineWidth',2);
+        hold on
+        xline(1,'k--','LineWidth',2);
+        ylabel(labels(i),"Interpreter","latex");
+        if i == numState
+            xlabel("Time (s)");
+        end
+        set(get(gca,'ylabel'),'rotation',0);
+        set(gca, 'FontSize', 15);
+        set(gca, 'FontName', 'Arial');
+    end 
+end
